@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09090d">
+  <meta name="description" content="Taplink Pay — удобная страница выбора способа оплаты.">
+  <title>Taplink Pay — оплата</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09090d;
+      --panel: #121117;
+      --panel-2: #191720;
+      --text: #f8f6f8;
+      --muted: #a7a1ad;
+      --line: rgba(255,255,255,.09);
+      --accent: #a62b4b;
+      --accent-2: #e34b6c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(166,43,75,.27), transparent 42%),
+        radial-gradient(ellipse at 100% 100%, rgba(100,32,57,.12), transparent 35%),
+        var(--bg);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex; flex-direction: column;
+    }
+    .wrap { width: min(100% - 32px, 480px); margin: auto; padding: 38px 0 26px; }
+    header { display: flex; justify-content: center; align-items: center; margin-bottom: 34px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 750; letter-spacing: -.04em; font-size: 20px; }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center;
+      background: linear-gradient(145deg, #bd3b5a, #67152e);
+      box-shadow: 0 7px 28px rgba(166,43,75,.32);
+      font-size: 18px; font-weight: 800;
+    }
+    .brand span:last-child { color: #f2e9ed; }
+    .hero { text-align: center; margin-bottom: 27px; }
+    .eyebrow { color: #d77b91; text-transform: uppercase; letter-spacing: .19em; font-size: 10px; font-weight: 750; }
+    h1 { margin: 12px 0 9px; font-size: clamp(30px, 8vw, 39px); letter-spacing: -.055em; line-height: 1.08; }
+    .sub { color: var(--muted); margin: 0 auto; font-size: 14px; line-height: 1.55; max-width: 330px; }
+    .card {
+      border: 1px solid var(--line); background: linear-gradient(160deg, rgba(28,25,34,.97), rgba(17,16,22,.97));
+      border-radius: 25px; padding: 23px; box-shadow: 0 22px 70px rgba(0,0,0,.34);
+    }
+    .field-label { display: block; color: #c4bdc8; font-size: 12px; font-weight: 650; margin: 0 0 10px 2px; }
+    .amount-wrap {
+      display: flex; align-items: center; gap: 10px; padding: 0 16px;
+      background: #0d0c11; border: 1px solid rgba(255,255,255,.11); border-radius: 15px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .amount-wrap:focus-within { border-color: rgba(211,74,107,.8); box-shadow: 0 0 0 3px rgba(166,43,75,.14); }
+    input {
+      width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: white;
+      font: inherit; font-size: 27px; font-weight: 700; letter-spacing: -.04em; padding: 17px 0;
+    }
+    input::placeholder { color: #514b57; }
+    .currency { color: #aaa3b0; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .hint { margin: 9px 2px 23px; color: #89828e; font-size: 11px; line-height: 1.45; }
+    .section-title { display: flex; align-items: center; gap: 10px; color: #e9e4eb; font-size: 13px; font-weight: 700; margin: 0 0 13px; }
+    .section-title:after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .methods { display: grid; gap: 10px; }
+    .method {
+      width: 100%; display: flex; align-items: center; gap: 13px; text-align: left;
+      padding: 13px 14px; min-height: 68px; border: 1px solid var(--line); border-radius: 16px;
+      background: rgba(255,255,255,.025); color: var(--text); opacity: .72; cursor: not-allowed;
+    }
+    .logo {
+      width: 42px; height: 42px; border-radius: 13px; flex: 0 0 42px;
+      display: grid; place-items: center; font-weight: 850; font-size: 18px; letter-spacing: -.07em;
+    }
+    .payme { background: #192f5e; color: #6aa7ff; }
+    .click { background: #173c32; color: #55d9a6; }
+    .paynet { background: #37265b; color: #c4a4ff; }
+    .uzum { background: #48234f; color: #efb1ff; }
+    .method-info { min-width: 0; flex: 1; }
+    .method-name { display: block; font-size: 14px; font-weight: 750; }
+    .method-desc { display: block; margin-top: 4px; color: #938c99; font-size: 11px; }
+    .status {
+      color: #c3a4ad; border: 1px solid rgba(195,164,173,.2); background: rgba(195,164,173,.06);
+      border-radius: 99px; font-size: 9px; padding: 5px 8px; white-space: nowrap; font-weight: 700;
+    }
+    .notice {
+      display: flex; gap: 10px; align-items: flex-start; margin-top: 17px; padding: 12px 13px;
+      border-radius: 13px; background: rgba(166,43,75,.09); border: 1px solid rgba(166,43,75,.18);
+      color: #c8aeb7; font-size: 11px; line-height: 1.5;
+    }
+    .notice b { color: #e5c9d2; }
+    .notice-icon { color: #e16a87; font-size: 15px; line-height: 1.1; }
+    footer { text-align: center; color: #655e6b; font-size: 10px; padding-top: 22px; letter-spacing: .03em; }
+    footer strong { color: #93828c; font-weight: 700; }
+    @media (max-width: 390px) {
+      .wrap { width: min(100% - 22px, 480px); padding-top: 25px; }
+      .card { padding: 18px; border-radius: 21px; }
+      .status { font-size: 8px; padding: 5px 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header aria-label="Taplink Pay">
+      <div class="brand"><span class="brand-mark">T</span><span>taplink<span style="color:#d85b79">pay</span></span></div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Простая и удобная оплата</div>
+      <h1>Оплатить услугу</h1>
+      <p class="sub">Укажите сумму и выберите удобный способ оплаты.</p>
+    </section>
+
+    <section class="card" aria-label="Форма оплаты">
+      <label class="field-label" for="amount">Сумма к оплате</label>
+      <div class="amount-wrap">
+        <input id="amount" type="number" inputmode="decimal" min="1" step="1" placeholder="0" autocomplete="off" aria-describedby="amount-hint">
+        <span class="currency">UZS</span>
+      </div>
+      <p class="hint" id="amount-hint">Введите сумму в сумах (UZS). Итоговая сумма будет показана перед подтверждением платежа.</p>
+
+      <h2 class="section-title">Выберите способ оплаты</h2>
+      <div class="methods">
+        <button class="method" type="button" disabled aria-disabled="true">
+          <span class="logo payme">P</span>
+          <span class="method-info"><span class="method-name">Payme</span><span class="method-desc">Оплата через Payme</span></span>
+          <span class="status">Подключается</span>
+        </button>
+        <button class="method" type="button" disabled aria-disabled="true">
+          <span class="logo click">C</span>
+          <span class="method-info"><span class="method-name">Click</span><span class="method-desc">Оплата через Click</span></span>
+          <span class="status">Подключается</span>
+        </button>
+        <button class="method" type="button" disabled aria-disabled="true">
+          <span class="logo paynet">P</span>
+          <span class="method-info"><span class="method-name">Paynet</span><span class="method-desc">Оплата через Paynet</span></span>
+          <span class="status">Подключается</span>
+        </button>
+        <button class="method" type="button" disabled aria-disabled="true">
+          <span class="logo uzum">U</span>
+          <span class="method-info"><span class="method-name">Uzum Bank</span><span class="method-desc">Оплата через Uzum</span></span>
+          <span class="status">Подключается</span>
+        </button>
+      </div>
+
+      <div class="notice" role="note">
+        <span class="notice-icon">ⓘ</span>
+        <span><b>Приём платежей ещё не активирован.</b> Кнопки станут доступны после подключения официальных платёжных данных. Не отправляйте деньги по непроверенным ссылкам.</span>
+      </div>
+    </section>
+    <footer>SECURE CHECKOUT CONCEPT · <strong>TAPLINKUZB</strong></footer>
+  </main>
+</body>
+</html>
